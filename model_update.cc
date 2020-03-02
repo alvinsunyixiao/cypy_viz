@@ -43,8 +43,8 @@ class ModelUpdate : public ModelPlugin
   void MessageHandler(const lcm::ReceiveBuffer *rbuf, 
                       const std::string &channel,
                       const comm::pose3d_t *msg) {
-    pose_.Set(msg->position.x, msg->position.y, msg->position.z,
-              msg->rotation.roll, msg->rotation.pitch, msg->rotation.yaw);
+    pose_.Set(ignition::math::Vector3d(msg->position.x, msg->position.y, msg->position.z),
+              ignition::math::Quaterniond(msg->quaternion.x, msg->quaternion.y, msg->quaternion.z, msg->quaternion.w));
     common::Console::msg << "Pose Updated: " << pose_ << std::endl;
   }
 

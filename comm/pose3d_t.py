@@ -9,20 +9,23 @@ except ImportError:
     from io import BytesIO
 import struct
 
+import comm.quaternion_t
+
 import comm.vec3d_t
 
 import comm.rot3d_t
 
 class pose3d_t(object):
-    __slots__ = ["position", "rotation"]
+    __slots__ = ["position", "rotation", "quaternion"]
 
-    __typenames__ = ["comm.vec3d_t", "comm.rot3d_t"]
+    __typenames__ = ["comm.vec3d_t", "comm.rot3d_t", "comm.quaternion_t"]
 
-    __dimensions__ = [None, None]
+    __dimensions__ = [None, None, None]
 
     def __init__(self):
         self.position = comm.vec3d_t()
         self.rotation = comm.rot3d_t()
+        self.quaternion = comm.quaternion_t()
 
     def encode(self):
         buf = BytesIO()
@@ -35,6 +38,8 @@ class pose3d_t(object):
         self.position._encode_one(buf)
         assert self.rotation._get_packed_fingerprint() == comm.rot3d_t._get_packed_fingerprint()
         self.rotation._encode_one(buf)
+        assert self.quaternion._get_packed_fingerprint() == comm.quaternion_t._get_packed_fingerprint()
+        self.quaternion._encode_one(buf)
 
     def decode(data):
         if hasattr(data, 'read'):
@@ -50,6 +55,7 @@ class pose3d_t(object):
         self = pose3d_t()
         self.position = comm.vec3d_t._decode_one(buf)
         self.rotation = comm.rot3d_t._decode_one(buf)
+        self.quaternion = comm.quaternion_t._decode_one(buf)
         return self
     _decode_one = staticmethod(_decode_one)
 
@@ -57,7 +63,7 @@ class pose3d_t(object):
     def _get_hash_recursive(parents):
         if pose3d_t in parents: return 0
         newparents = parents + [pose3d_t]
-        tmphash = (0x7547353365cf604d+ comm.vec3d_t._get_hash_recursive(newparents)+ comm.rot3d_t._get_hash_recursive(newparents)) & 0xffffffffffffffff
+        tmphash = (0xc1034df7526fae6f+ comm.vec3d_t._get_hash_recursive(newparents)+ comm.rot3d_t._get_hash_recursive(newparents)+ comm.quaternion_t._get_hash_recursive(newparents)) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _get_hash_recursive = staticmethod(_get_hash_recursive)

@@ -12,7 +12,15 @@ struct rot3d_t {
   double yaw;
 }
 
+struct quaternion_t {
+  double x;
+  double y;
+  double z;
+  double w;
+}
+
 struct pose3d_t {
   vec3d_t position;
   rot3d_t rotation;
+  quaternion_t quaternion;
 }

@@ -6,3 +6,4 @@ DO NOT MODIFY BY HAND!!!!
 from .vec3d_t import vec3d_t
 from .rot3d_t import rot3d_t
 from .pose3d_t import pose3d_t
+from .quaternion_t import quaternion_t
