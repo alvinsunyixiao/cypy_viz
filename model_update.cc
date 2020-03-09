@@ -29,23 +29,34 @@ class ModelUpdate : public ModelPlugin
 
     common::Console::msg << "Model Name: " << model_->GetName() << std::endl;
 
-    lcm_.subscribe(model_->GetName(), &ModelUpdate::MessageHandler, this);
+    lcm_.subscribe(model_->GetName(), &ModelUpdate::PoseUpdateHandler, this);
+    lcm_.subscribe(model_->GetName() + "_calib", &ModelUpdate::PoseCalibrationHandler, this);
   }
 
   // Called by the world update start event
   void OnUpdate() {
     // update location;
     lcm_.handleTimeout(0);
-    model_->SetWorldPose(pose_);
+    model_->SetWorldPose(pose_ - calib_pose_);
   }
 
  private: 
-  void MessageHandler(const lcm::ReceiveBuffer *rbuf, 
+  void PoseUpdateHandler(const lcm::ReceiveBuffer *rbuf, 
                       const std::string &channel,
                       const comm::pose3d_t *msg) {
     pose_.Set(ignition::math::Vector3d(msg->position.x, msg->position.y, msg->position.z),
-              ignition::math::Quaterniond(msg->quaternion.x, msg->quaternion.y, msg->quaternion.z, msg->quaternion.w));
+              ignition::math::Quaterniond(msg->quaternion.x, msg->quaternion.y, 
+                                          msg->quaternion.z, msg->quaternion.w));
     common::Console::msg << "Pose Updated: " << pose_ << std::endl;
+  }
+
+  void PoseCalibrationHandler(const lcm::ReceiveBuffer *rbuf,
+                            const std::string &channel,
+                            const comm::pose3d_t *msg) {
+    calib_pose_.Set(ignition::math::Vector3d(msg->position.x, msg->position.y, msg->position.z),
+                    ignition::math::Quaterniond(msg->quaternion.x, msg->quaternion.y, 
+                                                msg->quaternion.z, msg->quaternion.w));
+    common::Console::msg << "Calibration Pose Updated: " << calib_pose_ << std::endl;
   }
 
   // Pointer to the model
@@ -54,8 +65,11 @@ class ModelUpdate : public ModelPlugin
   // Pointer to the update event connection
   event::ConnectionPtr update_connection_;
 
-  // global pose
+  // real-time pose
   ignition::math::Pose3d pose_;
+
+  // calibrated offset pose
+  ignition::math::Pose3d calib_pose_;
 
   // LCM handle
   lcm::LCM lcm_;
