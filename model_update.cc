@@ -7,8 +7,7 @@
 #include <lcm/lcm-cpp.hpp>
 #include <lcmtypes/comm/pose3d_t.hpp>
 
-namespace gazebo
-{
+namespace gazebo {
 
 class ModelUpdate : public ModelPlugin
 {
@@ -27,10 +26,11 @@ class ModelUpdate : public ModelPlugin
     // initialize velocity
     model_->SetLinearVel(ignition::math::Vector3d(0, 0, 0));
 
-    common::Console::msg << "Model Name: " << model_->GetName() << std::endl;
+    gzmsg << "Model Name: " << model_->GetName() << std::endl;
 
     lcm_.subscribe(model_->GetName(), &ModelUpdate::PoseUpdateHandler, this);
-    lcm_.subscribe(model_->GetName() + "_calib", &ModelUpdate::PoseCalibrationHandler, this);
+    lcm_.subscribe(model_->GetName() + "CALIB", 
+        &ModelUpdate::PoseCalibrationHandler, this);
   }
 
   // Called by the world update start event
@@ -47,7 +47,7 @@ class ModelUpdate : public ModelPlugin
     pose_.Set(ignition::math::Vector3d(msg->position.x, msg->position.y, msg->position.z),
               ignition::math::Quaterniond(msg->quaternion.x, msg->quaternion.y, 
                                           msg->quaternion.z, msg->quaternion.w));
-    common::Console::msg << "Pose Updated: " << pose_ << std::endl;
+    gzmsg << "Pose Updated: " << pose_ << std::endl;
   }
 
   void PoseCalibrationHandler(const lcm::ReceiveBuffer *rbuf,
@@ -56,7 +56,7 @@ class ModelUpdate : public ModelPlugin
     calib_pose_.Set(ignition::math::Vector3d(msg->position.x, msg->position.y, msg->position.z),
                     ignition::math::Quaterniond(msg->quaternion.x, msg->quaternion.y, 
                                                 msg->quaternion.z, msg->quaternion.w));
-    common::Console::msg << "Calibration Pose Updated: " << calib_pose_ << std::endl;
+    gzmsg << "Calibration Pose Updated: " << calib_pose_ << std::endl;
   }
 
   // Pointer to the model

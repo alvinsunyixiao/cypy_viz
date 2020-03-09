@@ -10,10 +10,15 @@ list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 
 # Use LCM
 find_package(lcm REQUIRED)
+find_package(PythonInterp)
+if(PYTHONINTERP_FOUND)
+    set(python_args PYTHON_SOURCES python_install_sources)
+endif()
 include(${LCM_USE_FILE})
 # Generate LCM Headers and Libraries
 lcm_wrap_types(CPP_HEADERS LCM_HEADERS CPP11
                DESTINATION ${CMAKE_BINARY_DIR}/lcmtypes
+               ${python_args}
                comm.lcm)
 lcm_add_library(liblcm_comm CPP ${LCM_HEADERS})
 target_include_directories(liblcm_comm
@@ -24,3 +29,7 @@ add_library(model_update SHARED model_update.cc)
 target_link_libraries(model_update ${GAZEBO_LIBRARIES} liblcm_comm lcm)
 target_include_directories(model_update PRIVATE ${GAZEBO_INCLUDE_DIRS})
 
+# shared library for gazebo world plugin
+add_library(world_update SHARED world_update.cc)
+target_link_libraries(world_update ${GAZEBO_LIBRARIES} liblcm_comm lcm)
+target_include_directories(world_update PRIVATE ${GAZEBO_INCLUDE_DIRS})

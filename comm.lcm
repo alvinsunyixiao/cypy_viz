@@ -1,15 +1,14 @@
 package comm;
 
+struct model_t {
+  string name;
+  string path;
+}
+
 struct vec3d_t {
   double x;
   double y;
   double z;
-}
-
-struct rot3d_t {
-  double roll;
-  double pitch;
-  double yaw;
 }
 
 struct quaternion_t {
@@ -20,7 +19,6 @@ struct quaternion_t {
 }
 
 struct pose3d_t {
-  vec3d_t position;
-  rot3d_t rotation;
-  quaternion_t quaternion;
+  vec3d_t       position;
+  quaternion_t  quaternion;
 }

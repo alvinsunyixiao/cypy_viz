@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <sdf version='1.6'>
-  <model name='racecar'>
+  <model name='f1tenth'>
     <link name='base_link'>
       <pose frame=''>0 0 0 0 -0 0</pose>
       <inertial>
@@ -841,7 +841,7 @@
         </ode>
       </physics>
     </joint>
-    <static>0</static>
+    <static>1</static>
     <allow_auto_disable>1</allow_auto_disable>
     <plugin name="model_update" filename="libmodel_update.so"/>
   </model>
