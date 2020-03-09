@@ -45,8 +45,8 @@ class ModelUpdate : public ModelPlugin
                       const std::string &channel,
                       const comm::pose3d_t *msg) {
     pose_.Set(ignition::math::Vector3d(msg->position.x, msg->position.y, msg->position.z),
-              ignition::math::Quaterniond(msg->quaternion.x, msg->quaternion.y, 
-                                          msg->quaternion.z, msg->quaternion.w));
+              ignition::math::Quaterniond(msg->quaternion.w, msg->quaternion.x, 
+                                          msg->quaternion.y, msg->quaternion.z));
     gzmsg << "Pose Updated: " << pose_ << std::endl;
   }
 
@@ -54,8 +54,8 @@ class ModelUpdate : public ModelPlugin
                             const std::string &channel,
                             const comm::pose3d_t *msg) {
     calib_pose_.Set(ignition::math::Vector3d(msg->position.x, msg->position.y, msg->position.z),
-                    ignition::math::Quaterniond(msg->quaternion.x, msg->quaternion.y, 
-                                                msg->quaternion.z, msg->quaternion.w));
+                    ignition::math::Quaterniond(msg->quaternion.w, msg->quaternion.x, 
+                                                msg->quaternion.y, msg->quaternion.z));
     gzmsg << "Calibration Pose Updated: " << calib_pose_ << std::endl;
   }
 
