@@ -1,0 +1,13 @@
+[
+    {
+        "name": "drone1",
+        "vrpn_name": "cyphyhousecopter",
+        "type": "quadroter"
+    },
+
+    {
+        "name": "drone2",
+        "vrpn_name": "cyphyhousecopter1",
+        "type": "quadroter"
+    }
+]
